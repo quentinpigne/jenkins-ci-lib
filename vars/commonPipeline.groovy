@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 import fr.quentinpigne.jenkins.Constants
 
-def call(params) {
+def call(params, builder) {
     pipeline {
         stages {
             stage('Checkout') {
@@ -11,28 +11,43 @@ def call(params) {
 
             stage('Compile') {
                 steps {
+                    script {
+                        builder.compile(params)
+                    }
                 }
             }
 
             stages {
                 stage('Linter') {
                     steps {
+                        script {
+                            builder.lint(params)
+                        }
                     }
                 }
 
                 stage('Test') {
                     steps {
+                        script {
+                            builder.test(params)
+                        }
                     }
                 }
             }
 
             stage('Package') {
                 steps {
+                    script {
+                        builder.package(params)
+                    }
                 }
             }
 
             stage('Deliver / Publish') {
                 steps {
+                    script {
+                        builder.publish(params)
+                    }
                 }
             }
 
